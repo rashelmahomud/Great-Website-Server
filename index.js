@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { get } = require('express/lib/response');
 require('dotenv').config();
 const port = process.env.PORT || 5000;
 
@@ -21,6 +22,7 @@ async function run() {
     try {
         await client.connect();
         const serviceCollection = client.db('great-website').collection('greatService');
+        const orderCollection = client.db('great-website').collection('order');
 
         app.get('/greatService', async (req, res) => {
             const query = {};
@@ -47,6 +49,14 @@ async function run() {
             res.send(result);
 
         });
+
+        // Ordser collections api all here
+        app.post('/order', async(req, res) => {
+            const order = req.body;
+            const result = await orderCollection.insertOne(order);
+            res.send(result);
+
+        })
 
     }
     finally {
